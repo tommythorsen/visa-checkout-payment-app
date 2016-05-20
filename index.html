@@ -31,19 +31,30 @@
             document.getElementById("button").click();
         }
 
+        // Get the payment request from the service worker
         navigator.serviceWorker.register("payment-service-worker.js")
         .then(function() {
             return navigator.serviceWorker.ready;
         })
         .then(function() {
-            navigator.serviceWorker.addEventListener("controllerchange", function() {
-                console.log("controllerchange");
-                var messageChannel = new MessageChannel();
-                messageChannel.port1.onmessage = function(event) {
-                    console.log(JSON.stringify(event.data));
+            return new Promise(function(resolve, reject) {
+                if (navigator.serviceWorker.controller) {
+                    resolve();
+                } else {
+                    navigator.serviceWorker.addEventListener("controllerchange", function() {
+                        console.log("controllerchange");
+                        resolve();
+                    });
                 }
-                navigator.serviceWorker.controller.postMessage("get_request", [messageChannel.port2]);
             });
+        })
+        .then(function() {
+            console.log("creating messagechannel");
+            var messageChannel = new MessageChannel();
+            messageChannel.port1.onmessage = function(event) {
+                console.log(JSON.stringify(event.data));
+            }
+            navigator.serviceWorker.controller.postMessage("get_request", [messageChannel.port2]);
         })
         .catch(function(error) {
             console.log(error);
