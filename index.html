@@ -36,11 +36,13 @@
             return navigator.serviceWorker.ready;
         })
         .then(function() {
-            var messageChannel = new MessageChannel();
-            messageChannel.port1.onmessage = function(event) {
-                console.log(JSON.stringify(event.data));
-            }
-            navigator.serviceWorker.controller.postMessage("get_request", [messageChannel.port2]);
+            navigator.serviceWorker.addEventListener("controllerchange", function() {
+                var messageChannel = new MessageChannel();
+                messageChannel.port1.onmessage = function(event) {
+                    console.log(JSON.stringify(event.data));
+                }
+                navigator.serviceWorker.controller.postMessage("get_request", [messageChannel.port2]);
+            });
         })
         .catch(function(error) {
             console.log(error);
