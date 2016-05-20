@@ -1,0 +1,57 @@
+<html>
+    <head>
+        <script type="text/javascript">
+        function onVisaCheckoutReady(){
+            V.init({
+                apikey: "7O07VN664O10JW6A9ESS113p8sf9JeGzr6_2haC9F9m_ANtLM",
+                paymentRequest: {
+                    currencyCode: "USD",
+                    total: "10.00"
+                }
+            });
+            V.on("payment.success",
+                function(payment) {
+                    response = {
+                        "methodName" : "visa checkout",
+                        "details" : payment
+                    }
+                    document.getElementById("output").textContent = JSON.stringify(response, null, 4);
+                    navigator.payments.submitPaymentResponse(JSON.stringify(response));
+                });
+            V.on("payment.cancel",
+                function(payment) {
+                    document.getElementById("output").textContent = JSON.stringify(payment, null, 4);
+                    navigator.payments.submitPaymentResponse(null);
+                });
+            V.on("payment.error",
+                function(payment, error) {
+                    document.getElementById("output").textContent = JSON.stringify(error, null, 4);
+                    navigator.payments.submitPaymentResponse(null);
+                });
+            document.getElementById("button").click();
+        }
+
+        navigator.serviceWorker.register("payment-service-worker.js")
+        .then(function() {
+            return navigator.serviceWorker.ready;
+        })
+        .then(function() {
+            var messageChannel = new MessageChannel();
+            messageChannel.port1.onmessage = function(event) {
+                document.getElementById("output").textContent = JSON.stringify(event.data);
+            }
+            navigator.serviceWorker.controller.postMessage("get_request", [messageChannel.port2]);
+        })
+        .catch(function(error) {
+            document.getElementById("output").textContent = error;
+        });
+        </script>
+    </head>
+    <body>
+        <img alt="Visa Checkout" class="v-button" id="button" role="button" src="https://sandbox.secure.checkout.visa.com/wallet-services-web/xo/button.png" style="display: none"/>
+        <script type="text/javascript"
+            src="https://sandbox-assets.secure.checkout.visa.com/checkout-widget/resources/js/integration/v1/sdk.js">
+        </script>
+        <pre id="output"></pre>
+    </body>
+</html>
