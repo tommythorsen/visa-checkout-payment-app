@@ -4,6 +4,8 @@ self.addEventListener('activate', function(event) {
 
 self.addEventListener('fetch', function(event) {
     console.log("Handling fetch event: " + event.request.method + " " + event.request.url);
+    // TODO: Extract Payment Requests from POSTs and store them so that the
+    // web page can retrieve them later.
 });
 
 self.addEventListener('message', function(event) {

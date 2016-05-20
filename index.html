@@ -37,6 +37,7 @@
                 });
             })
             .then(function(paymentRequest) {
+                // Now that we have the "payment request", we can start the Visa Checkout flow
                 console.log(JSON.stringify(paymentRequest));
                 V.init({
                     apikey: "7O07VN664O10JW6A9ESS113p8sf9JeGzr6_2haC9F9m_ANtLM",
