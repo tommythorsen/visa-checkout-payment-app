@@ -37,6 +37,7 @@
         })
         .then(function() {
             navigator.serviceWorker.addEventListener("controllerchange", function() {
+                console.log("controllerchange");
                 var messageChannel = new MessageChannel();
                 messageChannel.port1.onmessage = function(event) {
                     console.log(JSON.stringify(event.data));

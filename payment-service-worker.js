@@ -4,7 +4,8 @@ self.addEventListener('activate', function(event) {
 
 self.addEventListener('fetch', function(event) {
     console.log("Handling fetch event: " + event.request.url);
-    console.log("BODY: " + event.request.formData());
+    console.log("method: " + event.request.method);
+    //console.log("BODY: " + event.request.formData());
 });
 
 self.addEventListener('message', function(event) {
