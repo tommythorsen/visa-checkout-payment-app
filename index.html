@@ -37,6 +37,8 @@
             return navigator.serviceWorker.ready;
         })
         .then(function() {
+            // The controller may or may not be ready at this point.
+            // See: https://github.com/slightlyoff/ServiceWorker/issues/799
             return new Promise(function(resolve, reject) {
                 if (navigator.serviceWorker.controller) {
                     resolve();
